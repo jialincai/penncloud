@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<body>
+<center> <h1> Admin Console </h1>
+<br>
+<a href="/home.html"><button>Homepage</button></a>
+</center>
+
+
+<table id="catTable">
+ <thead>
+   <tr>
+     <th>Row</th>
+     <th>Column</th>
+     <th >Value</th>
+   </tr>
+ </thead>
+ <tbody>
+   <tr><td colspan="4"><i>Loading...</i></td></tr>
+ </tbody>
+</table>
+
+<button id="prevButton">Previous</button>
+<button id="nextButton">Next</button>
+</body>
+<script>
+
+
+document.addEventListener('DOMContentLoaded', init, false);
+
+let data, table, sortCol;
+let sortAsc = false;
+const pageSize = 3;
+let curPage = 1;
+
+async function init() {
+ 
+  // Select the table (well, tbody)
+  table = document.querySelector('#catTable tbody');
+  // get the cats
+  let resp = await fetch('/getData');
+  //console.log(resp.json());
+  data = await resp.json();
+  renderTable();
+ 
+  // listen for sort clicks
+  document.querySelectorAll('#catTable thead tr th').forEach(t => {
+     t.addEventListener('click', sort, false);
+  });
+ 
+  document.querySelector('#nextButton').addEventListener('click', nextPage, false);
+  document.querySelector('#prevButton').addEventListener('click', previousPage, false);
+}
+
+function renderTable() {
+  // create html
+  let result = '';
+  //var json = JSON.parse(data);
+  Object.keys(data).forEach(function(key) {
+    console.log('Key: ' + key + ', Value: ' + data[key]);
+ 
+  value = data[key];
+  Object.keys(value).forEach(function(byte) {
+  p = value[byte];
+  result += `<tr>
+     <td>${key}</td>
+     <td>${byte}</td>
+     <td>${p}</td>
+     </tr>`;
+  });
+  });
+  table.innerHTML = result;
+}
+
+function sort(e) {
+  let thisSort = e.target.dataset.sort;
+  if(sortCol === thisSort) sortAsc = !sortAsc;
+  sortCol = thisSort;
+  console.log('sort dir is ', sortAsc);
+  data.sort((a, b) => {
+    if(a[sortCol] < b[sortCol]) return sortAsc?1:-1;
+    if(a[sortCol] > b[sortCol]) return sortAsc?-1:1;
+    return 0;
+  });
+  renderTable();
+}
+
+function previousPage() {
+  if(curPage > 1) curPage--;
+  renderTable();
+}
+
+function nextPage() {
+  if((curPage * pageSize) < data.length) curPage++;
+  renderTable();
+}
+
+
+</script>
+</html>

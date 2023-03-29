@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <body style="display: inline-block; text-align: left;">    
+        <center> <h1> New Message </h1> </center>   
+        <form action="/sendEmail" method="post">  
+            <div class="container">
+                <label>To: </label>   
+                <input type="text" placeholder="recipients" name="recipients" size="50" required>  
+                <br>
+                <label>Subject: </label>   
+                <input type="text" placeholder="subject" name="subject"><br>
+                    <textarea type="text"
+                    placeholder="message" name="message"
+                          size="40"
+                          height="400"
+                          width="800"></textarea><br>
+                <button type="submit">Send</button>    
+            </div>   
+        </form>     
+    </body>     
+</html>  
